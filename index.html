@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pendataan Usaha Digital</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: #f4f6f8;
+}
+
+.container {
+    max-width: 480px;
+    margin: auto;
+    padding: 20px 15px 40px;
+}
+
+.title {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    border: 1px solid #eee;
+}
+
+h2 {
+    margin: 0 0 12px;
+    font-size: 15px;
+    color: #e67e22;
+}
+
+label {
+    font-size: 13px;
+    color: #555;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 6px;
+    margin-bottom: 14px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    background: #fafafa;
+    transition: 0.2s;
+}
+
+input:focus, select:focus {
+    border-color: #e67e22;
+    background: #fff;
+    outline: none;
+}
+
+/* LOKASI */
+.btn-lokasi {
+    background: #e67e22;
+    color: white;
+    padding: 12px;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.lokasi-text {
+    font-size: 12px;
+    color: #777;
+    margin-bottom: 10px;
+}
+
+/* FOTO */
+.upload-box {
+    border: 1.5px dashed #ddd;
+    border-radius: 12px;
+    padding: 18px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.upload-box:hover {
+    border-color: #e67e22;
+    background: #fff8f2;
+}
+
+.upload-box p {
+    margin: 4px 0;
+    font-size: 13px;
+    color: #666;
+}
+
+.preview {
+    width: 100%;
+    border-radius: 12px;
+    margin-top: 10px;
+}
+
+/* SUBMIT */
+.submit-btn {
+    width: 100%;
+    padding: 15px;
+    border-radius: 12px;
+    border: none;
+    font-size: 15px;
+    font-weight: 600;
+    background: #ddd;
+    color: #999;
+    cursor: not-allowed;
+}
+
+/* ENABLE */
+.submit-btn.active {
+    background: #e67e22;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(230,126,34,0.3);
+}
+
+.submit-btn.active:active {
+    transform: scale(0.97);
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2 class="title">Pendataan Usaha Digital</h2>
+
+    <div class="card">
+        <h2>Data Pendaftar</h2>
+
+        <label>Nama Lengkap</label>
+        <input type="text" id="nama">
+
+        <label>Kecamatan</label>
+        <select id="kecamatan">
+            <option value="">Pilih Kecamatan</option>
+            <option value="Pontianak Barat">Pontianak Barat</option>
+            <option value="Pontianak Kota">Pontianak Kota</option>
+        </select>
+
+        <label>Kelurahan</label>
+        <select id="kelurahan">
+            <option value="">Pilih Kelurahan</option>
+        </select>
+
+        <label>Nama Usaha</label>
+        <input type="text" id="usaha">
+    </div>
+
+    <div class="card">
+        <h2>Isian Usaha</h2>
+
+        <div class="btn-lokasi" onclick="getLocation()">📍 Ambil Lokasi</div>
+        <div id="lokasi" class="lokasi-text">Lokasi belum diambil</div>
+
+        <label>Foto Usaha</label>
+        <div class="upload-box" onclick="document.getElementById('foto').click()">
+            <p>📷 Upload atau ambil foto usaha</p>
+            <p style="font-size:11px;">JPG/PNG • Maks 5MB</p>
+        </div>
+
+        <input type="file" id="foto" accept="image/*" capture="environment" hidden>
+        <img id="preview" class="preview" style="display:none;">
+    </div>
+
+    <button id="submitBtn" class="submit-btn">Lengkapi Data</button>
+
+</div>
+
+<script>
+const dataKelurahan = {
+    "Pontianak Barat": ["Sungai Jawi", "Pal Lima", "Sungai Beliung"],
+    "Pontianak Kota": ["Darat Sekip", "Mariana", "Tengah"]
+};
+
+document.getElementById("kecamatan").addEventListener("change", function() {
+    const kel = document.getElementById("kelurahan");
+    kel.innerHTML = '<option value="">Pilih Kelurahan</option>';
+
+    if (dataKelurahan[this.value]) {
+        dataKelurahan[this.value].forEach(k => {
+            let opt = document.createElement("option");
+            opt.value = k;
+            opt.textContent = k;
+            kel.appendChild(opt);
+        });
+    }
+});
+
+let lat="", lon="";
+
+function getLocation(){
+    navigator.geolocation.getCurrentPosition(pos=>{
+        lat=pos.coords.latitude;
+        lon=pos.coords.longitude;
+        document.getElementById("lokasi").innerText="📍 "+lat+", "+lon;
+        checkForm();
+    });
+}
+
+document.getElementById("foto").addEventListener("change",function(e){
+    const file=e.target.files[0];
+    if(file){
+        const p=document.getElementById("preview");
+        p.src=URL.createObjectURL(file);
+        p.style.display="block";
+        checkForm();
+    }
+});
+
+document.querySelectorAll("input, select").forEach(el=>{
+    el.addEventListener("input",checkForm);
+});
+
+function checkForm(){
+    const valid=
+        nama.value && kecamatan.value && kelurahan.value &&
+        usaha.value && lat && lon &&
+        foto.files.length;
+
+    const btn=document.getElementById("submitBtn");
+
+    if(valid){
+        btn.classList.add("active");
+        btn.innerText="Kirim Data";
+    } else {
+        btn.classList.remove("active");
+        btn.innerText="Lengkapi Data";
+    }
+}
+
+submitBtn.onclick=()=>{
+    if(!submitBtn.classList.contains("active")) return;
+
+    alert("Data berhasil dikirim");
+
+    document.querySelectorAll("input").forEach(i=>i.value="");
+    kecamatan.value="";
+    kelurahan.innerHTML='<option value="">Pilih Kelurahan</option>';
+    preview.style.display="none";
+    lokasi.innerText="Lokasi belum diambil";
+
+    lat=""; lon="";
+    checkForm();
+};
+</script>
+
+</body>
+</html>
