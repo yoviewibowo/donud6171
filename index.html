@@ -422,10 +422,79 @@ input:focus, select:focus{
 
 }
 
+/* ================= SPLASH GIF ================= */
+
+#splashScreen{
+
+    position:fixed;
+    inset:0;
+    background:#f4f6f8;
+
+    backdrop-filter:blur(4px);
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    z-index:999999;
+
+    transition:all 0.6s ease;
+
+}
+
+#splashScreen.hide{
+    opacity:0;
+    visibility:hidden;
+}
+
+.splash-gif{
+
+    width:180px;
+    max-width:55vw;
+
+    filter:
+    drop-shadow(
+        0 10px 25px rgba(0,0,0,0.12)
+    );
+
+}
+
+.loading-text{
+    margin-top:18px;
+    font-size:30px;
+    font-weight:800;
+    color:#e67e22;
+    letter-spacing:1px;
+}
+
+.loading-subtext{
+    margin-top:8px;
+    font-size:14px;
+    color:#777;
+}
+
 </style>
 </head>
 
 <body>
+    
+<!-- ================= SPLASH SCREEN ================= -->
+<div id="splashScreen">
+
+    <img 
+    src="https://raw.githubusercontent.com/yoviewibowo/donud6171/main/donut%20spin.gif"
+    class="splash-gif">
+
+    <div class="loading-text">
+        DONUD6171
+    </div>
+
+    <div class="loading-subtext">
+        Loading...
+    </div>
+
+</div>
 
 <div class="floating-donuts">
 
@@ -638,16 +707,43 @@ const dataKelurahan = {
 "Kota Baru"
 ],
 
+"Pontianak Tenggara": [
+"Bangka Belitung Laut",
+"Bangka Belitung Darat",
+"Bansir Laut",
+"Bansir Darat"
+],
+
+"Pontianak Timur": [
+"Parit Mayor",
+"Banjar Serasan",
+"Saigon",
+"Tanjung Hulu",
+"Tanjung Hilir",
+"Dalam Bugis",
+"Tambelan Sampit"
+],
+
 "Pontianak Barat": [
-"Sungai Jawi",
 "Pal Lima",
+"Sungai Jawi Dalam",
+"Sungai Jawi Luar",
 "Sungai Beliung"
 ],
 
 "Pontianak Kota": [
+"Sungai Bangkong",
 "Darat Sekip",
+"Tengah",
 "Mariana",
-"Tengah"
+"Sungai Jawi"
+],
+
+"Pontianak Utara": [
+"Batu Layang",
+"Siantan Hilir",
+"Siantan Tengah",
+"Siantan Hulu"
 ]
 
 };
@@ -1104,6 +1200,20 @@ async function loadDashboard(){
 /* ================= INIT ================= */
 
 loadDashboard();
+
+/* ================= SPLASH SCREEN ================= */
+
+window.onload = ()=>{
+
+    setTimeout(()=>{
+
+        document
+        .getElementById("splashScreen")
+        .classList.add("hide");
+
+    },2000);
+
+};
 
 </script>
 
