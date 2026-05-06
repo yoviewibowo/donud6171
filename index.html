@@ -366,6 +366,46 @@ input:focus, select:focus{
     animation-delay:1s;
 }
 
+/*RANKING USER*/
+.ranking-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 14px;
+    border-radius:14px;
+    background:#fafafa;
+    margin-bottom:10px;
+}
+
+.ranking-left{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.rank-badge{
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    background:#fff1e6;
+    color:#e67e22;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+    font-size:14px;
+}
+
+.rank-name{
+    font-weight:600;
+    color:#333;
+}
+
+.rank-total{
+    color:#e67e22;
+    font-weight:700;
+}
+
 @keyframes floatDonut{
 
     0%{
@@ -524,6 +564,17 @@ Lengkapi Data
 <div class="stat-card">
 <div class="stat-number" id="totalKecamatan">0</div>
 <div class="stat-label">Kecamatan Aktif</div>
+</div>
+
+<div class="card">
+
+<h2>
+<i class="fa-solid fa-trophy"></i>
+Ranking Penginput Data
+</h2>
+
+<div id="rankingList"></div>
+
 </div>
 
 </div>
@@ -943,6 +994,52 @@ Object.keys(data.perKecamatan);
 
 const values =
 Object.values(data.perKecamatan);
+
+const rankingContainer =
+document.getElementById("rankingList");
+
+rankingContainer.innerHTML = "";
+
+const rankingData =
+Object.entries(data.ranking)
+.sort((a,b)=>b[1]-a[1]);
+
+rankingData.forEach((item,index)=>{
+
+rankingContainer.innerHTML += `
+
+<div class="ranking-item">
+
+<div class="ranking-left">
+
+<div class="rank-badge">
+
+${
+index === 0
+? "🥇"
+: index === 1
+? "🥈"
+: index === 2
+? "🥉"
+: index + 1
+}
+
+</div>
+<div class="rank-name">
+${item[0]}
+</div>
+
+</div>
+
+<div class="rank-total">
+${item[1]} usaha
+</div>
+
+</div>
+
+`;
+
+});
 
 if(chart){
 chart.destroy();
