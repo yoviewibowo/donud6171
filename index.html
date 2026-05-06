@@ -249,6 +249,55 @@ input:focus, select:focus{
     color:#e67e22;
 }
 
+.app-header{
+    text-align:center;
+    margin-bottom:24px;
+}
+
+.logo-circle{
+    width:72px;
+    height:72px;
+    margin:auto;
+    margin-bottom:12px;
+    border-radius:50%;
+    background:#fff1e6;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:34px;
+    box-shadow:0 4px 12px rgba(230,126,34,0.18);
+}
+
+.app-header h1{
+    margin:0;
+    font-size:30px;
+    font-weight:800;
+    color:#e67e22;
+    letter-spacing:1px;
+}
+
+.app-header p{
+    margin-top:6px;
+    font-size:13px;
+    color:#777;
+    line-height:1.5;
+    max-width:260px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.version{
+    display:inline-block;
+    margin-top:8px;
+    padding:4px 12px;
+    border-radius:999px;
+    background:#fff1e6;
+    color:#e67e22;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:0.5px;
+}
+
 </style>
 </head>
 
@@ -263,7 +312,23 @@ Mengirim data...
 <!-- ================= FORM PAGE ================= -->
 <div class="page active" id="formPage">
 
-<h2 class="title">DONUD6171</h2>
+<div class="app-header">
+
+<div class="logo-circle">
+🍩
+</div>
+
+<h1>DONUD6171</h1>
+
+<span class="version">
+Sensus Ekonomi 2026
+</span>
+
+<p>
+Data dan Observasi Kegiatan Usaha Digital Kota Pontianak
+</p>
+
+</div>
 
 <div class="card">
 
@@ -706,16 +771,42 @@ parseFloat(item.lon)
 .addTo(map)
 
 .bindPopup(`
+
 <b>${item.usaha}</b><br>
 ${item.nama}<br>
-${item.kecamatan}<br>
+${item.kecamatan}
+
 <img src="${item.foto}" 
 style="
-width:120px;
-margin-top:8px;
-border-radius:10px;
+width:100%;
+height:140px;
+margin-top:10px;
+border-radius:14px;
 object-fit:cover;
+display:block;
+box-shadow:0 4px 10px rgba(0,0,0,0.12);
 ">
+
+<a href="
+https://www.google.com/maps?q=${item.lat},${item.lon}
+"
+target="_blank"
+style="
+display:block;
+margin-top:12px;
+background:#e67e22;
+color:white;
+text-align:center;
+padding:10px;
+border-radius:10px;
+text-decoration:none;
+font-weight:600;
+">
+
+📍 Buka di Google Maps
+
+</a>
+
 `);
 
 markers.push(marker);
