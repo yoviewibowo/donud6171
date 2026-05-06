@@ -298,6 +298,7 @@ input:focus, select:focus{
     letter-spacing:0.5px;
 }
 
+/*DONUT*/  
 .floating-donuts{
     position:fixed;
     inset:0;
@@ -314,26 +315,47 @@ input:focus, select:focus{
 }
 
 /* POSISI RANDOM */
+.floating-donuts{
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    pointer-events:none;
+    z-index:-1;
+}
+
+.donut{
+    position:absolute;
+
+    font-size:clamp(52px, 7vw, 110px);
+
+    opacity:0.14;
+
+    filter:blur(0.5px);
+
+    animation:floatDonut linear infinite;
+}
+
+/* POSISI */
 .donut:nth-child(1){
-    left:10%;
+    left:8%;
     animation-duration:18s;
     animation-delay:0s;
 }
 
 .donut:nth-child(2){
-    left:30%;
+    left:28%;
     animation-duration:24s;
     animation-delay:4s;
 }
 
 .donut:nth-child(3){
-    left:55%;
+    left:52%;
     animation-duration:20s;
     animation-delay:2s;
 }
 
 .donut:nth-child(4){
-    left:75%;
+    left:74%;
     animation-duration:28s;
     animation-delay:6s;
 }
@@ -354,7 +376,7 @@ input:focus, select:focus{
 
     100%{
         transform:
-        translateY(-120px)
+        translateY(-140px)
         rotate(360deg);
     }
 
