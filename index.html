@@ -143,23 +143,23 @@ input:focus, select:focus {
 <h2 class="title">DONUD - Data & Observasi Kegiatan Usaha Digital</h2>
 
 <div class="card">
-<h2>Data Pendaftar</h2>
+<h2>Keterangan Usaha</h2>
 
 <label>Nama Penginput Data</label>
 <input type="text" id="namaPenginput">
 
-<label>Nama Lengkap</label>
+<label>Nama Pemilik Usaha</label>
 <input type="text" id="nama">
 
 <label>Kecamatan</label>
 <select id="kecamatan">
 <option value="">Pilih Kecamatan</option>
-<option value="Pontianak Barat">Pontianak Selatan</option>
-<option value="Pontianak Barat">Pontianak Tenggara</option>
-<option value="Pontianak Barat">Pontianak Timur</option>
+<option value="Pontianak Selatan">Pontianak Selatan</option>
+<option value="Pontianak Tenggara">Pontianak Tenggara</option>
+<option value="Pontianak Timur">Pontianak Timur</option>
 <option value="Pontianak Barat">Pontianak Barat</option>
 <option value="Pontianak Kota">Pontianak Kota</option>
-<option value="Pontianak Barat">Pontianak Utara</option>
+<option value="Pontianak Utara">Pontianak Utara</option>
 </select>
 
 <label>Kelurahan</label>
@@ -172,7 +172,7 @@ input:focus, select:focus {
 </div>
 
 <div class="card">
-<h2>Isian Usaha</h2>
+<h2>Geotag Usaha</h2>
 
 <div class="btn-lokasi" onclick="getLocation()">📍 Ambil Lokasi</div>
 <div id="lokasi" class="lokasi-text">Lokasi belum diambil</div>
@@ -198,7 +198,7 @@ input:focus, select:focus {
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxasAxeJGPBe4fIrcVLHgLJB3rHtnqXi5uLj1CDW7eakzhn-pHdpN5YbZXTs46RjuIQjg/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx63_hZ-6Hy0MUhCg-XV_Vd0-zKy5Vk-okIszsenP1go8OEVI4NSZTYX3ZEcrzDGriisg/exec";
 
 const dataKelurahan = {
 "Pontianak Selatan": ["Benua Melayu Laut","Benua Melayu Darat","Parit Tokaya","Akcaya","Kota Baru"],
