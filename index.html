@@ -709,7 +709,13 @@ parseFloat(item.lon)
 <b>${item.usaha}</b><br>
 ${item.nama}<br>
 ${item.kecamatan}<br>
-<img src="${item.foto}" width="120">
+<img src="${item.foto}" 
+style="
+width:120px;
+margin-top:8px;
+border-radius:10px;
+object-fit:cover;
+">
 `);
 
 markers.push(marker);
