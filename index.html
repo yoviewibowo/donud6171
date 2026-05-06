@@ -3,147 +3,276 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>DONUD - Data & Observasi Kegiatan Usaha Digital</title>
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
-* { box-sizing: border-box; }
 
-body {
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
-    background: #f4f6f8;
+*{
+    box-sizing:border-box;
 }
 
-.container {
-    max-width: 480px;
-    margin: auto;
-    padding: 20px 15px 40px;
+body{
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    background:#f4f6f8;
+    color:#333;
 }
 
-.title {
-    text-align: center;
-    color: #333;
-    margin-bottom: 20px;
-    font-weight: 600;
+.container{
+    max-width:480px;
+    margin:auto;
+    padding:20px 15px 100px;
 }
 
-.card {
-    background: #ffffff;
-    border-radius: 16px;
-    padding: 18px;
-    margin-bottom: 16px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-    border: 1px solid #eee;
+.page{
+    display:none;
 }
 
-h2 {
-    margin: 0 0 12px;
-    font-size: 15px;
-    color: #e67e22;
+.page.active{
+    display:block;
 }
 
-label {
-    font-size: 13px;
-    color: #555;
+.title{
+    text-align:center;
+    color:#333;
+    margin-bottom:20px;
+    font-weight:700;
+    font-size:22px;
 }
 
-input, select {
-    width: 100%;
-    padding: 12px;
-    margin-top: 6px;
-    margin-bottom: 14px;
-    border-radius: 10px;
-    border: 1px solid #ddd;
-    font-size: 14px;
-    background: #fafafa;
-    transition: 0.2s;
+.card{
+    background:#ffffff;
+    border-radius:20px;
+    padding:18px;
+    margin-bottom:16px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.08);
+    border:1px solid #eee;
 }
 
-input:focus, select:focus {
-    border-color: #e67e22;
-    background: #fff;
-    outline: none;
+h2{
+    margin:0 0 12px;
+    font-size:16px;
+    color:#e67e22;
+    display:flex;
+    align-items:center;
+    gap:8px;
 }
 
-/* LOKASI */
-.btn-lokasi {
-    background: #e67e22;
-    color: white;
-    padding: 12px;
-    border-radius: 10px;
-    text-align: center;
-    font-weight: 500;
-    margin-bottom: 10px;
-    cursor: pointer;
+label{
+    font-size:13px;
+    color:#555;
 }
 
-.lokasi-text {
-    font-size: 12px;
-    color: #777;
-    margin-bottom: 10px;
+input, select{
+    width:100%;
+    padding:12px;
+    margin-top:6px;
+    margin-bottom:14px;
+    border-radius:12px;
+    border:1px solid #ddd;
+    font-size:14px;
+    background:#fafafa;
+    transition:0.2s;
+}
+
+input:focus, select:focus{
+    border-color:#e67e22;
+    background:#fff;
+    outline:none;
+}
+
+/* BUTTON */
+.btn-lokasi{
+    background:#e67e22;
+    color:white;
+    padding:14px;
+    border-radius:12px;
+    text-align:center;
+    font-weight:600;
+    margin-bottom:10px;
+    cursor:pointer;
+}
+
+.lokasi-text{
+    font-size:12px;
+    color:#777;
+    margin-bottom:10px;
 }
 
 /* FOTO */
-.upload-box {
-    border: 1.5px dashed #ddd;
-    border-radius: 12px;
-    padding: 18px;
-    text-align: center;
-    cursor: pointer;
-    transition: 0.2s;
+.upload-box{
+    border:1.5px dashed #ddd;
+    border-radius:14px;
+    padding:20px;
+    text-align:center;
+    cursor:pointer;
+    transition:0.2s;
 }
 
-.upload-box:hover {
-    border-color: #e67e22;
-    background: #fff8f2;
+.upload-box:hover{
+    border-color:#e67e22;
+    background:#fff8f2;
 }
 
-.upload-box p {
-    margin: 4px 0;
-    font-size: 13px;
-    color: #666;
+.upload-box p{
+    margin:4px 0;
+    font-size:13px;
+    color:#666;
 }
 
-.preview {
-    width: 100%;
-    border-radius: 12px;
-    margin-top: 10px;
+.preview{
+    width:100%;
+    border-radius:12px;
+    margin-top:10px;
 }
 
 /* SUBMIT */
-.submit-btn {
-    width: 100%;
-    padding: 15px;
-    border-radius: 12px;
-    border: none;
-    font-size: 15px;
-    font-weight: 600;
-    background: #ddd;
-    color: #999;
-    cursor: not-allowed;
+.submit-btn{
+    width:100%;
+    padding:16px;
+    border-radius:14px;
+    border:none;
+    font-size:15px;
+    font-weight:700;
+    background:#ddd;
+    color:#999;
+    cursor:not-allowed;
+    transition:0.2s;
 }
 
-.submit-btn.active {
-    background: #e67e22;
-    color: white;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(230,126,34,0.3);
+.submit-btn.active{
+    background:#e67e22;
+    color:white;
+    cursor:pointer;
+    box-shadow:0 4px 12px rgba(230,126,34,0.3);
 }
 
-.submit-btn.active:active {
-    transform: scale(0.97);
+.submit-btn.active:active{
+    transform:scale(0.97);
 }
+
+/* MAP */
+#map{
+    height:70vh;
+    border-radius:16px;
+    overflow:hidden;
+}
+
+/* DASHBOARD */
+.stat-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-bottom:16px;
+}
+
+.stat-card{
+    background:#fff;
+    border-radius:18px;
+    padding:20px;
+    text-align:center;
+    box-shadow:0 6px 18px rgba(0,0,0,0.08);
+}
+
+.stat-number{
+    font-size:28px;
+    font-weight:700;
+    color:#e67e22;
+}
+
+.stat-label{
+    margin-top:8px;
+    color:#666;
+    font-size:13px;
+}
+
+/* NAVIGATION */
+.bottom-nav{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    background:#fff;
+    display:flex;
+    justify-content:space-around;
+    padding:10px 0;
+    box-shadow:0 -4px 12px rgba(0,0,0,0.08);
+    z-index:999;
+}
+
+.nav-item{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    color:#999;
+    font-size:12px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.nav-item i{
+    font-size:22px;
+}
+
+.nav-item.active{
+    color:#e67e22;
+}
+
+.nav-circle{
+    width:56px;
+    height:40px;
+    border-radius:999px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.nav-item.active .nav-circle{
+    background:#fff1e6;
+}
+
+/* LOADING */
+.loading{
+    position:fixed;
+    inset:0;
+    background:rgba(255,255,255,0.8);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+    font-weight:700;
+    color:#e67e22;
+}
+
 </style>
 </head>
 
 <body>
 
+<div class="loading" id="loading">
+Mengirim data...
+</div>
+
 <div class="container">
 
-<h2 class="title">DONUD - Data & Observasi Kegiatan Usaha Digital</h2>
+<!-- ================= FORM PAGE ================= -->
+<div class="page active" id="formPage">
+
+<h2 class="title">DONUD</h2>
 
 <div class="card">
-<h2>Keterangan Usaha</h2>
+
+<h2>
+<i class="fa-solid fa-store"></i>
+Keterangan Usaha
+</h2>
 
 <label>Nama Penginput Data</label>
 <input type="text" id="namaPenginput">
@@ -169,74 +298,203 @@ input:focus, select:focus {
 
 <label>Nama Usaha</label>
 <input type="text" id="usaha">
+
 </div>
 
 <div class="card">
-<h2>Geotag Usaha</h2>
 
-<div class="btn-lokasi" onclick="getLocation()">📍 Ambil Lokasi</div>
-<div id="lokasi" class="lokasi-text">Lokasi belum diambil</div>
+<h2>
+<i class="fa-solid fa-location-dot"></i>
+Geotag Usaha
+</h2>
+
+<div class="btn-lokasi" onclick="getLocation()">
+📍 Ambil Lokasi
+</div>
+
+<div id="lokasi" class="lokasi-text">
+Lokasi belum diambil
+</div>
 
 <label>Latitude (Manual)</label>
-<input type="number" id="latManual" placeholder="-0.12345">
+<input type="number" id="latManual">
 
 <label>Longitude (Manual)</label>
-<input type="number" id="lonManual" placeholder="109.12345">
+<input type="number" id="lonManual">
 
 <label>Foto Usaha</label>
+
 <div class="upload-box" onclick="document.getElementById('foto').click()">
 <p>📷 Upload atau ambil foto usaha</p>
 <p style="font-size:11px;">JPG/PNG • Maks 5MB</p>
 </div>
 
 <input type="file" id="foto" accept="image/*" capture="environment" hidden>
+
 <img id="preview" class="preview" style="display:none;">
+
 </div>
 
-<button id="submitBtn" class="submit-btn">Lengkapi Data</button>
+<button id="submitBtn" class="submit-btn">
+Lengkapi Data
+</button>
+
+</div>
+
+<!-- ================= MAP PAGE ================= -->
+<div class="page" id="mapsPage">
+
+<h2 class="title">Peta Usaha Digital</h2>
+
+<div class="card">
+<div id="map"></div>
+</div>
+
+</div>
+
+<!-- ================= DASHBOARD PAGE ================= -->
+<div class="page" id="dashboardPage">
+
+<h2 class="title">Dashboard DONUD</h2>
+
+<div class="stat-grid">
+
+<div class="stat-card">
+<div class="stat-number" id="totalUsaha">0</div>
+<div class="stat-label">Total Usaha</div>
+</div>
+
+<div class="stat-card">
+<div class="stat-number" id="totalKecamatan">6</div>
+<div class="stat-label">Kecamatan</div>
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>
+<i class="fa-solid fa-chart-column"></i>
+Usaha per Kecamatan
+</h2>
+
+<canvas id="chart"></canvas>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ================= BOTTOM NAVIGATION ================= -->
+<div class="bottom-nav">
+
+<div class="nav-item active" onclick="showPage('formPage', this)">
+<div class="nav-circle">
+<i class="fa-solid fa-pen-to-square"></i>
+</div>
+<span>Input</span>
+</div>
+
+<div class="nav-item" onclick="showPage('mapsPage', this)">
+<div class="nav-circle">
+<i class="fa-solid fa-map-location-dot"></i>
+</div>
+<span>Maps</span>
+</div>
+
+<div class="nav-item" onclick="showPage('dashboardPage', this)">
+<div class="nav-circle">
+<i class="fa-solid fa-chart-pie"></i>
+</div>
+<span>Dashboard</span>
+</div>
 
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx63_hZ-6Hy0MUhCg-XV_Vd0-zKy5Vk-okIszsenP1go8OEVI4NSZTYX3ZEcrzDGriisg/exec";
+
+const SCRIPT_URL = "GANTI_DENGAN_URL_APPS_SCRIPT";
 
 const dataKelurahan = {
-"Pontianak Selatan": ["Benua Melayu Laut","Benua Melayu Darat","Parit Tokaya","Akcaya","Kota Baru"],
-"Pontianak Barat": ["Sungai Jawi","Pal Lima","Sungai Beliung"],
-"Pontianak Kota": ["Darat Sekip","Mariana","Tengah"]
+
+"Pontianak Selatan": [
+"Benua Melayu Laut",
+"Benua Melayu Darat",
+"Parit Tokaya",
+"Akcaya",
+"Kota Baru"
+],
+
+"Pontianak Barat": [
+"Sungai Jawi",
+"Pal Lima",
+"Sungai Beliung"
+],
+
+"Pontianak Kota": [
+"Darat Sekip",
+"Mariana",
+"Tengah"
+]
+
 };
 
 kecamatan.onchange = function(){
-kelurahan.innerHTML='<option value="">Pilih Kelurahan</option>';
-(dataKelurahan[this.value]||[]).forEach(k=>{
-let o=document.createElement("option");
-o.value=k;o.textContent=k;
+
+kelurahan.innerHTML =
+'<option value="">Pilih Kelurahan</option>';
+
+(dataKelurahan[this.value] || []).forEach(k=>{
+
+let o = document.createElement("option");
+
+o.value = k;
+o.textContent = k;
+
 kelurahan.appendChild(o);
+
 });
+
 };
 
 let lat="", lon="";
 
 function getLocation(){
+
 navigator.geolocation.getCurrentPosition(pos=>{
-lat=pos.coords.latitude;
-lon=pos.coords.longitude;
-lokasi.innerText="📍 "+lat+", "+lon;
+
+lat = pos.coords.latitude;
+lon = pos.coords.longitude;
+
+lokasi.innerText =
+"📍 " + lat + ", " + lon;
+
 checkForm();
+
 });
+
 }
 
 foto.onchange = e=>{
-const file=e.target.files[0];
+
+const file = e.target.files[0];
+
 if(file){
-preview.src=URL.createObjectURL(file);
-preview.style.display="block";
+
+preview.src = URL.createObjectURL(file);
+preview.style.display = "block";
+
 checkForm();
+
 }
+
 };
 
 document.querySelectorAll("input,select").forEach(el=>{
+
 el.addEventListener("input",checkForm);
+
 });
 
 function checkForm(){
@@ -250,79 +508,185 @@ nama.value &&
 kecamatan.value &&
 kelurahan.value &&
 usaha.value &&
-latFinal && lonFinal &&
+latFinal &&
+lonFinal &&
 foto.files.length;
 
 if(valid){
+
 submitBtn.classList.add("active");
-submitBtn.innerText="Kirim Data";
+submitBtn.innerText = "Kirim Data";
+
 }else{
+
 submitBtn.classList.remove("active");
-submitBtn.innerText="Lengkapi Data";
-}
+submitBtn.innerText = "Lengkapi Data";
+
 }
 
-submitBtn.onclick = async () => {
+}
+
+submitBtn.onclick = async ()=>{
 
 if(!submitBtn.classList.contains("active")) return;
 
-submitBtn.innerText = "Mengirim...";
-submitBtn.disabled = true;
+loading.style.display = "flex";
 
-try {
+try{
 
 const file = foto.files[0];
+
 let base64 = "";
 
 if(file){
+
 base64 = await new Promise(r=>{
+
 const reader = new FileReader();
+
 reader.onloadend = ()=>r(reader.result);
+
 reader.readAsDataURL(file);
+
 });
+
 }
 
 const data = {
-namaPenginput: namaPenginput.value,
-nama: nama.value,
-kecamatan: kecamatan.value,
-kelurahan: kelurahan.value,
-usaha: usaha.value,
-lat: latManual.value || lat,
-lon: lonManual.value || lon,
-foto: base64
+
+namaPenginput:namaPenginput.value,
+nama:nama.value,
+kecamatan:kecamatan.value,
+kelurahan:kelurahan.value,
+usaha:usaha.value,
+lat:latManual.value || lat,
+lon:lonManual.value || lon,
+foto:base64
+
 };
 
-const response = await fetch(SCRIPT_URL, {
-method: "POST",
-body: JSON.stringify(data)
+const response = await fetch(SCRIPT_URL,{
+method:"POST",
+body:JSON.stringify(data)
 });
 
-const result = await response.text();
+const result = await response.json();
 
-console.log(result);
+if(result.status === "success"){
 
 alert("Data berhasil dikirim 😏");
 
 document.querySelectorAll("input").forEach(i=>i.value="");
+
 kecamatan.value="";
-kelurahan.innerHTML='<option value="">Pilih Kelurahan</option>';
+
+kelurahan.innerHTML =
+'<option value="">Pilih Kelurahan</option>';
+
 preview.style.display="none";
+
 lokasi.innerText="Lokasi belum diambil";
 
-lat=""; lon="";
+lat="";
+lon="";
+
 checkForm();
 
-} catch(err){
+}else{
+
+alert(result.message);
+
+}
+
+}catch(err){
 
 console.error(err);
+
 alert("Gagal kirim data 😢");
 
 }
 
-submitBtn.disabled = false;
+loading.style.display = "none";
+
 };
+
+/* ================= PAGE ================= */
+
+function showPage(pageId, element){
+
+document.querySelectorAll('.page').forEach(page=>{
+page.classList.remove('active');
+});
+
+document.getElementById(pageId)
+.classList.add('active');
+
+document.querySelectorAll('.nav-item').forEach(nav=>{
+nav.classList.remove('active');
+});
+
+element.classList.add('active');
+
+if(pageId === 'mapsPage'){
+
+setTimeout(()=>{
+map.invalidateSize();
+},300);
+
+}
+
+}
+
+/* ================= MAP ================= */
+
+const map = L.map('map')
+.setView([-0.0263, 109.3425], 12);
+
+L.tileLayer(
+'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+{
+attribution:'&copy; OpenStreetMap'
+}
+).addTo(map);
+
+L.marker([-0.0263,109.3425])
+.addTo(map)
+.bindPopup("<b>Contoh Usaha</b>");
+
+/* ================= CHART ================= */
+
+new Chart(document.getElementById('chart'), {
+
+type:'bar',
+
+data:{
+labels:[
+'Selatan',
+'Barat',
+'Kota',
+'Utara'
+],
+
+datasets:[{
+label:'Jumlah Usaha',
+data:[12,19,7,10],
+borderRadius:12
+}]
+},
+
+options:{
+responsive:true,
+plugins:{
+legend:{
+display:false
+}
+}
+}
+
+});
+
 </script>
 
 </body>
 </html>
+```
