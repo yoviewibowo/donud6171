@@ -624,7 +624,7 @@ Usaha per Kecamatan
 
 /* ================= CONFIG ================= */
 
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzkpMrBhJb-wTI-n51H3V4NpPeppvDsMwdDL7KGGLJB-ehm7PU2zM80C5h8IjjzMBQ/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx9q22X0OKF3v9wCMJlh-RO9gPPxVsvwTQIrC2AIGreKzsoIyU2pV5qxFRytgeYwzqr/exec";
 
 /* ================= KELURAHAN ================= */
 
@@ -974,108 +974,130 @@ let chart;
 
 async function loadDashboard(){
 
-try{
+  try{
 
-const response = await fetch(
-SCRIPT_URL + "?action=dashboard"
-);
+    const response = await fetch(
+      SCRIPT_URL + "?action=dashboard"
+    );
 
-const data = await response.json();
+    const data = await response.json();
 
-document.getElementById("totalUsaha")
-.innerText = data.totalUsaha;
+    console.log(data);
 
-document.getElementById("totalKecamatan")
-.innerText =
-Object.keys(data.perKecamatan).length;
+    /* ================= TOTAL ================= */
 
-const labels =
-Object.keys(data.perKecamatan);
+    document.getElementById("totalUsaha")
+      .innerText = data.totalUsaha || 0;
 
-const values =
-Object.values(data.perKecamatan);
+    document.getElementById("totalKecamatan")
+      .innerText = Object.keys(
+        data.perKecamatan || {}
+      ).length;
 
-const rankingContainer =
-document.getElementById("rankingList");
+    /* ================= CHART ================= */
 
-rankingContainer.innerHTML = "";
+    const labels =
+      Object.keys(data.perKecamatan || {});
 
-const rankingData =
-Object.entries(data.ranking)
-.sort((a,b)=>b[1]-a[1]);
+    const values =
+      Object.values(data.perKecamatan || {});
 
-rankingData.forEach((item,index)=>{
+    if(chart){
+      chart.destroy();
+    }
 
-rankingContainer.innerHTML += `
+    chart = new Chart(
 
-<div class="ranking-item">
+      document.getElementById("chart"),
 
-<div class="ranking-left">
+      {
+        type:'bar',
 
-<div class="rank-badge">
+        data:{
+          labels:labels,
 
-${
-index === 0
-? "🥇"
-: index === 1
-? "🥈"
-: index === 2
-? "🥉"
-: index + 1
-}
+          datasets:[{
+            label:'Jumlah Usaha',
+            data:values,
+            borderRadius:12
+          }]
+        },
 
-</div>
-<div class="rank-name">
-${item[0]}
-</div>
+        options:{
+          responsive:true,
 
-</div>
+          plugins:{
+            legend:{
+              display:false
+            }
+          },
 
-<div class="rank-total">
-${item[1]} usaha
-</div>
+          scales:{
+            y:{
+              beginAtZero:true
+            }
+          }
 
-</div>
+        }
 
-`;
+      }
 
-});
+    );
 
-if(chart){
-chart.destroy();
-}
+    /* ================= RANKING ================= */
 
-chart = new Chart(
-document.getElementById("chart"),
-{
-type:'bar',
+    const rankingContainer =
+      document.getElementById("rankingList");
 
-data:{
-labels:labels,
+    rankingContainer.innerHTML = "";
 
-datasets:[{
-label:'Jumlah Usaha',
-data:values,
-borderRadius:12
-}]
-},
+    const rankingData =
+      Object.entries(data.ranking || {})
+      .sort((a,b)=>b[1]-a[1]);
 
-options:{
-responsive:true,
-plugins:{
-legend:{
-display:false
-}
-}
-}
+    rankingData.forEach((item,index)=>{
 
-});
+      rankingContainer.innerHTML += `
 
-}catch(err){
+      <div class="ranking-item">
 
-console.error(err);
+        <div class="ranking-left">
 
-}
+          <div class="rank-badge">
+
+            ${
+              index === 0
+              ? "🥇"
+              : index === 1
+              ? "🥈"
+              : index === 2
+              ? "🥉"
+              : index + 1
+            }
+
+          </div>
+
+          <div class="rank-name">
+            ${item[0]}
+          </div>
+
+        </div>
+
+        <div class="rank-total">
+          ${item[1]} usaha
+        </div>
+
+      </div>
+
+      `;
+
+    });
+
+  }catch(err){
+
+    console.error(err);
+
+  }
 
 }
 
