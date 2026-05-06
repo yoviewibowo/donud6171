@@ -8,6 +8,7 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -87,7 +88,6 @@ input:focus, select:focus{
     outline:none;
 }
 
-/* BUTTON */
 .btn-lokasi{
     background:#e67e22;
     color:white;
@@ -105,7 +105,6 @@ input:focus, select:focus{
     margin-bottom:10px;
 }
 
-/* FOTO */
 .upload-box{
     border:1.5px dashed #ddd;
     border-radius:14px;
@@ -132,7 +131,6 @@ input:focus, select:focus{
     margin-top:10px;
 }
 
-/* SUBMIT */
 .submit-btn{
     width:100%;
     padding:16px;
@@ -217,12 +215,12 @@ input:focus, select:focus{
     cursor:pointer;
 }
 
-.nav-item i{
-    font-size:22px;
-}
-
 .nav-item.active{
     color:#e67e22;
+}
+
+.nav-item i{
+    font-size:22px;
 }
 
 .nav-circle{
@@ -365,8 +363,8 @@ Lengkapi Data
 </div>
 
 <div class="stat-card">
-<div class="stat-number" id="totalKecamatan">6</div>
-<div class="stat-label">Kecamatan</div>
+<div class="stat-number" id="totalKecamatan">0</div>
+<div class="stat-label">Kecamatan Aktif</div>
 </div>
 
 </div>
@@ -386,7 +384,7 @@ Usaha per Kecamatan
 
 </div>
 
-<!-- ================= BOTTOM NAVIGATION ================= -->
+<!-- ================= NAVIGATION ================= -->
 <div class="bottom-nav">
 
 <div class="nav-item active" onclick="showPage('formPage', this)">
@@ -414,7 +412,11 @@ Usaha per Kecamatan
 
 <script>
 
-const SCRIPT_URL = "GANTI_DENGAN_URL_APPS_SCRIPT";
+/* ================= CONFIG ================= */
+
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxXKig3q4QRB5CM8iCQNpzbSWKG2BVPGzh06xAPEzVmGQ8l6Gz3pnBzuE43j-Zc0h4Krw/exec";
+
+/* ================= KELURAHAN ================= */
 
 const dataKelurahan = {
 
@@ -440,6 +442,8 @@ const dataKelurahan = {
 
 };
 
+/* ================= FORM ================= */
+
 kecamatan.onchange = function(){
 
 kelurahan.innerHTML =
@@ -458,7 +462,8 @@ kelurahan.appendChild(o);
 
 };
 
-let lat="", lon="";
+let lat = "";
+let lon = "";
 
 function getLocation(){
 
@@ -483,6 +488,7 @@ const file = e.target.files[0];
 if(file){
 
 preview.src = URL.createObjectURL(file);
+
 preview.style.display = "block";
 
 checkForm();
@@ -526,6 +532,8 @@ submitBtn.innerText = "Lengkapi Data";
 
 }
 
+/* ================= SUBMIT ================= */
+
 submitBtn.onclick = async ()=>{
 
 if(!submitBtn.classList.contains("active")) return;
@@ -566,8 +574,10 @@ foto:base64
 };
 
 const response = await fetch(SCRIPT_URL,{
+
 method:"POST",
 body:JSON.stringify(data)
+
 });
 
 const result = await response.json();
@@ -576,21 +586,10 @@ if(result.status === "success"){
 
 alert("Data berhasil dikirim 😏");
 
-document.querySelectorAll("input").forEach(i=>i.value="");
+resetForm();
 
-kecamatan.value="";
-
-kelurahan.innerHTML =
-'<option value="">Pilih Kelurahan</option>';
-
-preview.style.display="none";
-
-lokasi.innerText="Lokasi belum diambil";
-
-lat="";
-lon="";
-
-checkForm();
+loadMaps();
+loadDashboard();
 
 }else{
 
@@ -609,6 +608,28 @@ alert("Gagal kirim data 😢");
 loading.style.display = "none";
 
 };
+
+function resetForm(){
+
+document.querySelectorAll("input").forEach(i=>{
+i.value="";
+});
+
+kecamatan.value="";
+
+kelurahan.innerHTML =
+'<option value="">Pilih Kelurahan</option>';
+
+preview.style.display="none";
+
+lokasi.innerText="Lokasi belum diambil";
+
+lat="";
+lon="";
+
+checkForm();
+
+}
 
 /* ================= PAGE ================= */
 
@@ -633,6 +654,14 @@ setTimeout(()=>{
 map.invalidateSize();
 },300);
 
+loadMaps();
+
+}
+
+if(pageId === 'dashboardPage'){
+
+loadDashboard();
+
 }
 
 }
@@ -640,7 +669,7 @@ map.invalidateSize();
 /* ================= MAP ================= */
 
 const map = L.map('map')
-.setView([-0.0263, 109.3425], 12);
+.setView([-0.0263,109.3425],12);
 
 L.tileLayer(
 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -649,27 +678,96 @@ attribution:'&copy; OpenStreetMap'
 }
 ).addTo(map);
 
-L.marker([-0.0263,109.3425])
+let markers = [];
+
+async function loadMaps(){
+
+markers.forEach(m=>map.removeLayer(m));
+
+markers = [];
+
+try{
+
+const response = await fetch(
+SCRIPT_URL + "?action=maps"
+);
+
+const data = await response.json();
+
+data.forEach(item=>{
+
+if(item.lat && item.lon){
+
+const marker = L.marker([
+parseFloat(item.lat),
+parseFloat(item.lon)
+])
+
 .addTo(map)
-.bindPopup("<b>Contoh Usaha</b>");
 
-/* ================= CHART ================= */
+.bindPopup(`
+<b>${item.usaha}</b><br>
+${item.nama}<br>
+${item.kecamatan}<br>
+<img src="${item.foto}" width="120">
+`);
 
-new Chart(document.getElementById('chart'), {
+markers.push(marker);
 
+}
+
+});
+
+}catch(err){
+
+console.error(err);
+
+}
+
+}
+
+/* ================= DASHBOARD ================= */
+
+let chart;
+
+async function loadDashboard(){
+
+try{
+
+const response = await fetch(
+SCRIPT_URL + "?action=dashboard"
+);
+
+const data = await response.json();
+
+document.getElementById("totalUsaha")
+.innerText = data.totalUsaha;
+
+document.getElementById("totalKecamatan")
+.innerText =
+Object.keys(data.perKecamatan).length;
+
+const labels =
+Object.keys(data.perKecamatan);
+
+const values =
+Object.values(data.perKecamatan);
+
+if(chart){
+chart.destroy();
+}
+
+chart = new Chart(
+document.getElementById("chart"),
+{
 type:'bar',
 
 data:{
-labels:[
-'Selatan',
-'Barat',
-'Kota',
-'Utara'
-],
+labels:labels,
 
 datasets:[{
 label:'Jumlah Usaha',
-data:[12,19,7,10],
+data:values,
 borderRadius:12
 }]
 },
@@ -685,8 +783,19 @@ display:false
 
 });
 
+}catch(err){
+
+console.error(err);
+
+}
+
+}
+
+/* ================= INIT ================= */
+
+loadDashboard();
+
 </script>
 
 </body>
 </html>
-```
