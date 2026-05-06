@@ -74,6 +74,7 @@ input:focus, select:focus {
     text-align: center;
     font-weight: 500;
     margin-bottom: 10px;
+    cursor: pointer;
 }
 
 .lokasi-text {
@@ -122,7 +123,6 @@ input:focus, select:focus {
     cursor: not-allowed;
 }
 
-/* ENABLE */
 .submit-btn.active {
     background: #e67e22;
     color: white;
@@ -140,125 +140,182 @@ input:focus, select:focus {
 
 <div class="container">
 
-    <h2 class="title">DONUD - Data & Observasi Kegiatan Usaha Digital</h2>
+<h2 class="title">DONUD - Data & Observasi Kegiatan Usaha Digital</h2>
 
-    <div class="card">
-        <h2>Data Pendaftar</h2>
+<div class="card">
+<h2>Data Pendaftar</h2>
 
-        <label>Nama Lengkap</label>
-        <input type="text" id="nama">
+<label>Nama Penginput Data</label>
+<input type="text" id="namaPenginput">
 
-        <label>Kecamatan</label>
-        <select id="kecamatan">
-            <option value="">Pilih Kecamatan</option>
-            <option value="Pontianak Barat">Pontianak Barat</option>
-            <option value="Pontianak Kota">Pontianak Kota</option>
-        </select>
+<label>Nama Lengkap</label>
+<input type="text" id="nama">
 
-        <label>Kelurahan</label>
-        <select id="kelurahan">
-            <option value="">Pilih Kelurahan</option>
-        </select>
+<label>Kecamatan</label>
+<select id="kecamatan">
+<option value="">Pilih Kecamatan</option>
+<option value="Pontianak Barat">Pontianak Barat</option>
+<option value="Pontianak Kota">Pontianak Kota</option>
+</select>
 
-        <label>Nama Usaha</label>
-        <input type="text" id="usaha">
-    </div>
+<label>Kelurahan</label>
+<select id="kelurahan">
+<option value="">Pilih Kelurahan</option>
+</select>
 
-    <div class="card">
-        <h2>Isian Usaha</h2>
+<label>Nama Usaha</label>
+<input type="text" id="usaha">
+</div>
 
-        <div class="btn-lokasi" onclick="getLocation()">📍 Ambil Lokasi</div>
-        <div id="lokasi" class="lokasi-text">Lokasi belum diambil</div>
+<div class="card">
+<h2>Isian Usaha</h2>
 
-        <label>Foto Usaha</label>
-        <div class="upload-box" onclick="document.getElementById('foto').click()">
-            <p>📷 Upload atau ambil foto usaha</p>
-            <p style="font-size:11px;">JPG/PNG • Maks 5MB</p>
-        </div>
+<div class="btn-lokasi" onclick="getLocation()">📍 Ambil Lokasi</div>
+<div id="lokasi" class="lokasi-text">Lokasi belum diambil</div>
 
-        <input type="file" id="foto" accept="image/*" capture="environment" hidden>
-        <img id="preview" class="preview" style="display:none;">
-    </div>
+<label>Latitude (Manual)</label>
+<input type="number" id="latManual" placeholder="-0.12345">
 
-    <button id="submitBtn" class="submit-btn">Lengkapi Data</button>
+<label>Longitude (Manual)</label>
+<input type="number" id="lonManual" placeholder="109.12345">
+
+<label>Foto Usaha</label>
+<div class="upload-box" onclick="document.getElementById('foto').click()">
+<p>📷 Upload atau ambil foto usaha</p>
+<p style="font-size:11px;">JPG/PNG • Maks 5MB</p>
+</div>
+
+<input type="file" id="foto" accept="image/*" capture="environment" hidden>
+<img id="preview" class="preview" style="display:none;">
+</div>
+
+<button id="submitBtn" class="submit-btn">Lengkapi Data</button>
 
 </div>
 
 <script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxuTZPvjpxxsorRp4FtQ2rDkTNXC5_wbfcS_b83JWiv6cPBMdERidnVSSXzb-AMLG0fVg/exec";
+
 const dataKelurahan = {
-    "Pontianak Barat": ["Sungai Jawi", "Pal Lima", "Sungai Beliung"],
-    "Pontianak Kota": ["Darat Sekip", "Mariana", "Tengah"]
+"Pontianak Barat": ["Sungai Jawi","Pal Lima","Sungai Beliung"],
+"Pontianak Kota": ["Darat Sekip","Mariana","Tengah"]
 };
 
-document.getElementById("kecamatan").addEventListener("change", function() {
-    const kel = document.getElementById("kelurahan");
-    kel.innerHTML = '<option value="">Pilih Kelurahan</option>';
-
-    if (dataKelurahan[this.value]) {
-        dataKelurahan[this.value].forEach(k => {
-            let opt = document.createElement("option");
-            opt.value = k;
-            opt.textContent = k;
-            kel.appendChild(opt);
-        });
-    }
+kecamatan.onchange = function(){
+kelurahan.innerHTML='<option value="">Pilih Kelurahan</option>';
+(dataKelurahan[this.value]||[]).forEach(k=>{
+let o=document.createElement("option");
+o.value=k;o.textContent=k;
+kelurahan.appendChild(o);
 });
+};
 
 let lat="", lon="";
 
 function getLocation(){
-    navigator.geolocation.getCurrentPosition(pos=>{
-        lat=pos.coords.latitude;
-        lon=pos.coords.longitude;
-        document.getElementById("lokasi").innerText="📍 "+lat+", "+lon;
-        checkForm();
-    });
+navigator.geolocation.getCurrentPosition(pos=>{
+lat=pos.coords.latitude;
+lon=pos.coords.longitude;
+lokasi.innerText="📍 "+lat+", "+lon;
+checkForm();
+});
 }
 
-document.getElementById("foto").addEventListener("change",function(e){
-    const file=e.target.files[0];
-    if(file){
-        const p=document.getElementById("preview");
-        p.src=URL.createObjectURL(file);
-        p.style.display="block";
-        checkForm();
-    }
-});
+foto.onchange = e=>{
+const file=e.target.files[0];
+if(file){
+preview.src=URL.createObjectURL(file);
+preview.style.display="block";
+checkForm();
+}
+};
 
-document.querySelectorAll("input, select").forEach(el=>{
-    el.addEventListener("input",checkForm);
+document.querySelectorAll("input,select").forEach(el=>{
+el.addEventListener("input",checkForm);
 });
 
 function checkForm(){
-    const valid=
-        nama.value && kecamatan.value && kelurahan.value &&
-        usaha.value && lat && lon &&
-        foto.files.length;
 
-    const btn=document.getElementById("submitBtn");
+const latFinal = latManual.value || lat;
+const lonFinal = lonManual.value || lon;
 
-    if(valid){
-        btn.classList.add("active");
-        btn.innerText="Kirim Data";
-    } else {
-        btn.classList.remove("active");
-        btn.innerText="Lengkapi Data";
-    }
+const valid =
+namaPenginput.value &&
+nama.value &&
+kecamatan.value &&
+kelurahan.value &&
+usaha.value &&
+latFinal && lonFinal &&
+foto.files.length;
+
+if(valid){
+submitBtn.classList.add("active");
+submitBtn.innerText="Kirim Data";
+}else{
+submitBtn.classList.remove("active");
+submitBtn.innerText="Lengkapi Data";
+}
 }
 
-submitBtn.onclick=()=>{
-    if(!submitBtn.classList.contains("active")) return;
+submitBtn.onclick = async () => {
 
-    alert("Data berhasil dikirim");
+if(!submitBtn.classList.contains("active")) return;
 
-    document.querySelectorAll("input").forEach(i=>i.value="");
-    kecamatan.value="";
-    kelurahan.innerHTML='<option value="">Pilih Kelurahan</option>';
-    preview.style.display="none";
-    lokasi.innerText="Lokasi belum diambil";
+submitBtn.innerText = "Mengirim...";
+submitBtn.disabled = true;
 
-    lat=""; lon="";
-    checkForm();
+try {
+
+const file = foto.files[0];
+let base64 = "";
+
+if(file){
+base64 = await new Promise(r=>{
+const reader = new FileReader();
+reader.onloadend = ()=>r(reader.result);
+reader.readAsDataURL(file);
+});
+}
+
+const data = {
+namaPenginput: namaPenginput.value,
+nama: nama.value,
+kecamatan: kecamatan.value,
+kelurahan: kelurahan.value,
+usaha: usaha.value,
+lat: latManual.value || lat,
+lon: lonManual.value || lon,
+foto: base64
+};
+
+const response = await fetch(SCRIPT_URL, {
+method: "POST",
+body: JSON.stringify(data)
+});
+
+const result = await response.text();
+
+console.log(result);
+
+alert("Data berhasil dikirim 😏");
+
+document.querySelectorAll("input").forEach(i=>i.value="");
+kecamatan.value="";
+kelurahan.innerHTML='<option value="">Pilih Kelurahan</option>';
+preview.style.display="none";
+lokasi.innerText="Lokasi belum diambil";
+
+lat=""; lon="";
+checkForm();
+
+} catch(err){
+
+console.error(err);
+alert("Gagal kirim data 😢");
+
+}
+
+submitBtn.disabled = false;
 };
 </script>
 
