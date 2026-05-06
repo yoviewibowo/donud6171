@@ -298,10 +298,82 @@ input:focus, select:focus{
     letter-spacing:0.5px;
 }
 
+.floating-donuts{
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    pointer-events:none;
+    z-index:-1;
+}
+
+.donut{
+    position:absolute;
+    font-size:42px;
+    opacity:0.08;
+    animation:floatDonut linear infinite;
+}
+
+/* POSISI RANDOM */
+.donut:nth-child(1){
+    left:10%;
+    animation-duration:18s;
+    animation-delay:0s;
+}
+
+.donut:nth-child(2){
+    left:30%;
+    animation-duration:24s;
+    animation-delay:4s;
+}
+
+.donut:nth-child(3){
+    left:55%;
+    animation-duration:20s;
+    animation-delay:2s;
+}
+
+.donut:nth-child(4){
+    left:75%;
+    animation-duration:28s;
+    animation-delay:6s;
+}
+
+.donut:nth-child(5){
+    left:90%;
+    animation-duration:22s;
+    animation-delay:1s;
+}
+
+@keyframes floatDonut{
+
+    0%{
+        transform:
+        translateY(110vh)
+        rotate(0deg);
+    }
+
+    100%{
+        transform:
+        translateY(-120px)
+        rotate(360deg);
+    }
+
+}
+
 </style>
 </head>
 
 <body>
+
+<div class="floating-donuts">
+
+<div class="donut">🍩</div>
+<div class="donut">🍩</div>
+<div class="donut">🍩</div>
+<div class="donut">🍩</div>
+<div class="donut">🍩</div>
+
+</div>
 
 <div class="loading" id="loading">
 Mengirim data...
